@@ -7,6 +7,6 @@ This was the result of fiddling with the Ruby mode (ruby.js) of CodeMirror for 3
 
 To use with Light Table, put elixir.js inside the core/node_modules/codemirror/modes/ directory and add these into your user.behaviors:
 
-<code>:files [(:lt.objs.files/file-types [
+:files [(:lt.objs.files/file-types [
     {:name "Elixir" :exts [:elixir :ex :exs] :mime "text/x-elixir" :tags [:editor.elixir]}
-])]</code>
+])]

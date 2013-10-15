@@ -54,7 +54,7 @@ CodeMirror.defineMode("elixir", function(config) {
   var indentWords = wordObj([
     "case",
     "catch",
-    "def",
+    /*"def",
     "defdelegate",
     "defimpl",
     "defmacro",
@@ -63,7 +63,7 @@ CodeMirror.defineMode("elixir", function(config) {
     "defoverridable",
     "defp",
     "defprotocol",
-    "defrecord",
+    "defrecord",*/
     "do",
     "for",
     "then"
@@ -262,7 +262,7 @@ CodeMirror.defineMode("elixir", function(config) {
         depth--;
         if (depth === 0) {
           state.tokenize.pop();
-          return state.tokenize[state.tokenize.length-1](stream, state);
+          return state.tokenize[state.tokenize.length - 1](stream, state);
         }
       } else if (stream.peek() == "{") {
         depth++;
@@ -275,7 +275,7 @@ CodeMirror.defineMode("elixir", function(config) {
     return function(stream, state) {
       if (alreadyCalled) {
         state.tokenize.pop();
-        return state.tokenize[state.tokenize.length-1](stream, state);
+        return state.tokenize[state.tokenize.length - 1](stream, state);
       }
       alreadyCalled = true;
       return tokenBase(stream, state);
@@ -348,7 +348,7 @@ CodeMirror.defineMode("elixir", function(config) {
         style = keywords.propertyIsEnumerable(stream.current()) ? "keyword"
           : builtinWords.propertyIsEnumerable(stream.current()) ? "builtin"
           : operatorWords.propertyIsEnumerable(stream.current()) ? "operator"
-          : moduleWords.propertyIsEnumerable(stream.current()) ? "variable"
+          : moduleWords.propertyIsEnumerable(stream.current()) ? "tag"
           : /^[A-Z]/.test(word) ? "tag"
           /*: (state.lastTok == "def" || state.lastTok == "class" || state.varList) ? "def"*/
           : (defineWords.propertyIsEnumerable(state.lastTok) || state.varList) ? "def"
@@ -372,13 +372,15 @@ CodeMirror.defineMode("elixir", function(config) {
     },
 
     indent: function(state, textAfter) {
-      if (state.tokenize[state.tokenize.length-1] != tokenBase) return 0;
+      if (state.tokenize[state.tokenize.length - 1] != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0);
       var ct = state.context;
+      var fromEnd = firstChar.length === 0 && state.lastTok === "end";
       var closing = ct.type == matching[firstChar] ||
         ct.type == "keyword" && /^(?:end|until|else|elsif|when|rescue)\b/.test(textAfter);
-      return ct.indented + (closing ? 0 : config.indentUnit) +
-        (state.continuedLine ? config.indentUnit : 0);
+      /*return ct.indented + (closing 0 : config.indentUnit) +
+        (state.continuedLine ? config.indentUnit : 0);*/
+      return ct.indented + (closing || fromEnd ? 0 : config.indentUnit) + (state.continuedLine ? config.indentUnit : 0);
     },
 
     electricChars: "}de", // enD and rescuE

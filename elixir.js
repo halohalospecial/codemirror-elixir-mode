@@ -34,8 +34,6 @@ CodeMirror.defineMode("elixir", function(config) {
     "import",
     "use",
     "if",
-    "true",
-    "false",
     "when",
     "case",
     "cond",
@@ -49,24 +47,29 @@ CodeMirror.defineMode("elixir", function(config) {
     "fn",
     "function",
     "receive",
-    "end"
+    "end",
+  ]);
+  var atomWords = wordObj([
+	"true",
+    "false",
+    "nil"
   ]);
   var indentWords = wordObj([
-    "case",
-    "catch",
-    /*"def",
-    "defdelegate",
-    "defimpl",
-    "defmacro",
-    "defmacrop",
-    "defmodule",
-    "defoverridable",
-    "defp",
-    "defprotocol",
-    "defrecord",*/
+    //"case",
+    //"catch",
+    // "def",
+    // "defdelegate",
+    // "defimpl",
+    // "defmacro",
+    // "defmacrop",
+    // "defmodule",
+    // "defoverridable",
+    // "defp",
+    // "defprotocol",
+    // "defrecord",
     "do",
-    "for",
-    "then"
+    //"for",
+    //"then"
   ]);
   var defineWords = wordObj([
     "def",
@@ -165,7 +168,8 @@ CodeMirror.defineMode("elixir", function(config) {
     /*if (ch == "`" || ch == "'" || ch == '"') {
       return chain(readQuoted(ch, "string", ch == '"' || ch == "`"), stream, state);
     }*/
-    if (ch == "'" || ch == '"') {
+
+	if (ch == "'" || ch == '"') {
       return chain(readQuoted(ch, "string", ch == '"' || ch == '"'), stream, state);
     } else if (ch == "/" && !stream.eol() && stream.peek() != " ") {
       return chain(readQuoted(ch, "string-2", true), stream, state);
@@ -346,6 +350,7 @@ CodeMirror.defineMode("elixir", function(config) {
       if (style == "ident") {
         word = stream.current();
         style = keywords.propertyIsEnumerable(stream.current()) ? "keyword"
+		  :	atomWords.propertyIsEnumerable(stream.current()) ? "atom"
           : builtinWords.propertyIsEnumerable(stream.current()) ? "builtin"
           : operatorWords.propertyIsEnumerable(stream.current()) ? "operator"
           : moduleWords.propertyIsEnumerable(stream.current()) ? "tag"
@@ -371,16 +376,27 @@ CodeMirror.defineMode("elixir", function(config) {
       return style;
     },
 
+//     indent: function(state, textAfter) {
+//       if (state.tokenize[state.tokenize.length - 1] != tokenBase) return 0;
+//       var firstChar = textAfter && textAfter.charAt(0);
+//       var ct = state.context;
+//       var fromEnd = firstChar.length === 0 && state.lastTok === "end";
+//       var closing = ct.type == matching[firstChar] ||
+//         ct.type == "keyword" && /^(?:end|until|else|elsif|when|rescue)\b/.test(textAfter);
+//       /*return ct.indented + (closing 0 : config.indentUnit) +
+//         (state.continuedLine ? config.indentUnit : 0);*/
+//       return ct.indented + (closing || fromEnd ? 0 : config.indentUnit) + (state.continuedLine ? config.indentUnit : 0);
+//     },
+
     indent: function(state, textAfter) {
-      if (state.tokenize[state.tokenize.length - 1] != tokenBase) return 0;
+      if (state.tokenize[state.tokenize.length-1] != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0);
       var ct = state.context;
-      var fromEnd = firstChar.length === 0 && state.lastTok === "end";
       var closing = ct.type == matching[firstChar] ||
         ct.type == "keyword" && /^(?:end|until|else|elsif|when|rescue)\b/.test(textAfter);
-      /*return ct.indented + (closing 0 : config.indentUnit) +
-        (state.continuedLine ? config.indentUnit : 0);*/
-      return ct.indented + (closing || fromEnd ? 0 : config.indentUnit) + (state.continuedLine ? config.indentUnit : 0);
+      var fromEnd = firstChar.length === 0 && state.lastTok === "end";
+      if (fromEnd) { return 0; }
+      return ct.indented + (closing ? 0 : config.indentUnit) + (state.continuedLine ? config.indentUnit : 0);
     },
 
     electricChars: "}de", // enD and rescuE

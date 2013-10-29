@@ -1,9 +1,9 @@
 codemirror-elixir-mode
 ======================
 
-Quick-and-dirty Elixir mode for CodeMirror / Light Table
+Elixir mode for CodeMirror / Light Table
 
-This was the result of fiddling with the Ruby mode (ruby.js) of CodeMirror for 30 minutes. Use at your own risk :)
+Hacked from CodeMirror's ruby.js and most probably incomplete. Use at your own risk :)
 
 To use with Light Table, put elixir.js inside the core/node_modules/codemirror/modes/ directory and add these into your user.behaviors:
 

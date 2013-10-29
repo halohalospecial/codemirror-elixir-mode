@@ -374,8 +374,8 @@ CodeMirror.defineMode("elixir", function(config) {
           : "variable";
         if (indentWords.propertyIsEnumerable(word)) kwtype = "indent";
         else if (dedentWords.propertyIsEnumerable(word)) kwtype = "dedent";
-        else if ((word == "if" || word == "unless") && stream.column() == stream.indentation())
-          kwtype = "indent";
+        // else if ((word == "if" || word == "unless") && stream.column() == stream.indentation())
+        //   kwtype = "indent";
       }
       if (curPunc || (style && style != "comment")) state.lastTok = word || curPunc || style;
       if (curPunc == "|") state.varList = !state.varList;
@@ -391,13 +391,13 @@ CodeMirror.defineMode("elixir", function(config) {
     },
 
     indent: function(state, textAfter) {
-      if (state.tokenize[state.tokenize.length-1] != tokenBase) return 0;
+      //if (state.tokenize[state.tokenize.length-1] != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0);
       var ct = state.context;
       var closing = ct.type == matching[firstChar] ||
         ct.type == "keyword" && /^(?:end|until|else|elsif|when|rescue)\b/.test(textAfter);
       var fromEnd = firstChar.length === 0 && state.lastTok === "end";
-      if (fromEnd) { return 0; }
+      if (fromEnd) { return state.indented; }
       return ct.indented + (closing ? 0 : config.indentUnit) + (state.continuedLine ? config.indentUnit : 0);
     },
 

@@ -166,28 +166,11 @@ CodeMirror.defineMode("elixir", function(config) {
     }
     if (stream.eatSpace()) return null;
     var ch = stream.next(), m;
-    /*if (ch == "`" || ch == "'" || ch == '"') {
-      return chain(readQuoted(ch, "string", ch == '"' || ch == "`"), stream, state);
-    }*/
-
 	  if (ch == "'" || ch == '"') {
       return chain(readQuoted(ch, "string", ch == '"' || ch == '"'), stream, state);
-    } /*else if (ch == "/" && !stream.eol() && stream.peek() != " ") {
-      return chain(readQuoted(ch, "string-2", true), stream, state);
     } else if (ch == "%") {
       var style = "string", embed = true;
-      if (stream.eat("s")) style = "atom";
-      else if (stream.eat(/[WQ]/)) style = "string";
-      else if (stream.eat(/[r]/)) style = "string-2";
-      else if (stream.eat(/[wxq]/)) { style = "string"; embed = false; }
-      var delim = stream.eat(/[^\w\s]/);
-      if (!delim) return "operator";
-      if (matching.propertyIsEnumerable(delim)) delim = matching[delim];
-      return chain(readQuoted(delim, style, embed, true), stream, state);
-    }*/ else if (ch == "%") {
-      var style = "string", embed = true;
-      /*if (stream.eat("s")) style = "atom";
-      else*/ if (stream.eat(/[SWC]/)) style = "string";
+      if (stream.eat(/[SWC]/)) style = "string";
       else if (stream.eat(/[r]/)) style = "string-2";
       else if (stream.eat(/[swc]/)) { style = "string"; embed = false; }
       var delim = stream.eat(/[^\w\s]/);
@@ -197,9 +180,7 @@ CodeMirror.defineMode("elixir", function(config) {
     } else if (ch == "#") {
       stream.skipToEnd();
       return "comment";
-    } /*else if (ch == "<" && (m = stream.match(/^<-?[\`\"\']?([a-zA-Z_?]\w*)[\`\"\']?(?:;|$)/))) {
-      return chain(readHereDoc(m[1]), stream, state);
-    }*/ else if (ch == "0") {
+    } else if (ch == "0") {
       if (stream.eat("x")) stream.eatWhile(/[\da-fA-F]/);
       else if (stream.eat("b")) stream.eatWhile(/[01]/);
       else stream.eatWhile(/[0-7]/);
@@ -215,41 +196,13 @@ CodeMirror.defineMode("elixir", function(config) {
     } else if (ch == ":") {
       if (stream.eat("'")) return chain(readQuoted("'", "atom", false), stream, state);
       if (stream.eat('"')) return chain(readQuoted('"', "atom", true), stream, state);
-
-      /*// :> :>> :< :<< are valid symbols
-      if (stream.eat(/[\<\>]/)) {
-        stream.eat(/[\<\>]/);
-        return "atom";
-      }
-
-      // :+ :- :/ :* :| :& :! are valid symbols
-      if (stream.eat(/[\+\-\*\/\&\|\:\!]/)) {
-        return "atom";
-      }*/
-
-      // Symbols can't start by a digit
-      /*if (stream.eat(/[a-zA-Z$@_]/)) {*/
       if (stream.eat(/[a-zA-Z_]/)) {
         stream.eatWhile(/[\w]/);
-        // Only one ? ! = is allowed and only as the last character
         stream.eat(/[\?\!\=]/);
         return "atom";
       }
       return "operator";
-    } /*else if (ch == "@" && stream.match(/^@?[a-zA-Z_]/)) {
-      stream.eat("@");
-      stream.eatWhile(/[\w]/);
-      return "variable-2";
-    } else if (ch == "$") {
-      if (stream.eat(/[a-zA-Z_]/)) {
-        stream.eatWhile(/[\w]/);
-      } else if (stream.eat(/\d/)) {
-        stream.eat(/\d/);
-      } else {
-        stream.next(); // Must be a special global like $: or $!
-      }
-      return "variable-3";
-    }*/ else if (/[a-zA-Z_]/.test(ch)) {
+    } else if (/[a-zA-Z_]/.test(ch)) {
       stream.eatWhile(/[\w]/);
       stream.eat(/[\?\!]/);
       if (stream.eat(":")) return "atom";
@@ -260,12 +213,7 @@ CodeMirror.defineMode("elixir", function(config) {
     } else if (/[\(\)\[\]{}\\;]/.test(ch)) {
       curPunc = ch;
       return null;
-    } /*else if (ch == "-" && stream.eat(">")) {
-      return "arrow";
-    } else if (/[=+\-\/*:\.^%<>~|]/.test(ch)) {
-      stream.eatWhile(/[=+\-\/*:\.^%<>~|]/);
-      return "operator";
-    }*/ else if (/[=+\-\/*:\.^%<>~|&]/.test(ch)) {
+    } else if (/[=+\-\/*:\.^%<>~|&]/.test(ch)) {
       stream.eatWhile(/[=+\-\/*:\.^%<>~|&]/);
       return "operator";
     } else {
@@ -308,7 +256,6 @@ CodeMirror.defineMode("elixir", function(config) {
         stream.eat("}");
       }
 
-      /*while ((ch = stream.next()) != null) {*/
       ch = stream.next();
       while (ch !== null && ch !== undefined) {
         if (ch == quote && (unescaped || !escaped)) {
@@ -322,10 +269,7 @@ CodeMirror.defineMode("elixir", function(config) {
             }
             state.tokenize.push(tokenBaseUntilBrace());
             break;
-          } /*else if (/[@\$]/.test(stream.peek())) {
-            state.tokenize.push(tokenBaseOnce());
-            break;
-          }*/
+          }
         }
         escaped = !escaped && ch == "\\";
         ch = stream.next();
@@ -369,13 +313,10 @@ CodeMirror.defineMode("elixir", function(config) {
           : operatorWords.propertyIsEnumerable(stream.current()) ? "operator"
           : moduleWords.propertyIsEnumerable(stream.current()) ? "tag"
           : /^[A-Z]/.test(word) ? "tag"
-          /*: (state.lastTok == "def" || state.lastTok == "class" || state.varList) ? "def"*/
           : (defineWords.propertyIsEnumerable(state.lastTok) || state.varList) ? "def"
           : "variable";
         if (indentWords.propertyIsEnumerable(word)) kwtype = "indent";
         else if (dedentWords.propertyIsEnumerable(word)) kwtype = "dedent";
-        // else if ((word == "if" || word == "unless") && stream.column() == stream.indentation())
-        //   kwtype = "indent";
       }
       if (curPunc || (style && style != "comment")) state.lastTok = word || curPunc || style;
       if (curPunc == "|") state.varList = !state.varList;
@@ -391,7 +332,6 @@ CodeMirror.defineMode("elixir", function(config) {
     },
 
     indent: function(state, textAfter) {
-      //if (state.tokenize[state.tokenize.length-1] != tokenBase) return 0;
       var firstChar = textAfter && textAfter.charAt(0);
       var ct = state.context;
       var closing = ct.type == matching[firstChar] ||

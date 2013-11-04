@@ -3,7 +3,7 @@ codemirror-elixir-mode
 
 [Elixir](http://elixir-lang.org) mode for [CodeMirror](http://codemirror.net) / [Light Table](http://www.lighttable.com) based on [ruby.js](https://github.com/marijnh/CodeMirror/blob/master/mode/ruby/ruby.js).
 
-Probably incomplete, but has good enough syntax highlighting and indentation.
+Still incomplete, but has usable enough syntax highlighting and auto-indentation.
 
 To use with Light Table, put ```elixir.js``` inside the ```core/node_modules/codemirror/modes/``` directory and add these into your user.behaviors:
 

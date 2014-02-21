@@ -1,0 +1,4 @@
+{:+ {:app [(:lt.objs.plugins/load-js ["elixir.js", "elixir_compiled.js"])]
+     :files [(:lt.objs.files/file-types [{:name "Elixir" :exts [:elixir :ex :exs] :mime "text/x-elixir" :tags [:editor.elixir]}
+                                         {:name "HTML" :exts [:eex] :mime "htmlmixed" :tags [:editor.html]}
+                                         ])]}}

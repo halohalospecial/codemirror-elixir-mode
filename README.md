@@ -7,5 +7,4 @@ This is really a quick hack since CodeMirror does not have an official Elixir mo
 
 Syntax highlighting works most of the time, while auto-indentation is a work in progress.
 
-
-Warning: Not yet updated for the most recent version of Elixir.
+Warning: Not yet updated for the latest version of Elixir

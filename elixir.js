@@ -149,7 +149,8 @@ CodeMirror.defineMode("elixir", function(config) {
         "=",
         ":=",
         "<-",
-        "//"
+        "//",
+        "\\"
     ]);
     var dedentWords = wordObj(["end", "until"]);
     var matching = {"[": "]", "{": "}", "(": ")"};

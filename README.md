@@ -6,3 +6,6 @@ codemirror-elixir-mode
 This is really a quick hack since CodeMirror does not have an official Elixir mode yet.
 
 Syntax highlighting works most of the time, while auto-indentation is a work in progress.
+
+
+Warning: Not yet updated for the most recent version of Elixir.
